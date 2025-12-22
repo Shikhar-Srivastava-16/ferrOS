@@ -1,0 +1,17 @@
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
+[[bin]]
+name = "ferrOS"
+test = false
+bench = false
+
+[package]
+name = "ferrOS"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
