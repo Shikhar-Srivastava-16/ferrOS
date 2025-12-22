@@ -24,3 +24,5 @@ target
 .idea/
 .zed/
 informal-notes/
+
+Cargo.lock
