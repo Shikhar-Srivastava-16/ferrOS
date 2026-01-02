@@ -17,6 +17,5 @@ edition = "2024"
 [dependencies]
 bootloader = "0.9"
 spin = "0.10.0"
-toml = "0.9.10"
 volatile = "0.2.6"
 x86_64 = "0.15.4"
