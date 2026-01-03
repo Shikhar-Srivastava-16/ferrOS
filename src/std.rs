@@ -20,3 +20,14 @@ enum Either<Ty1, Ty2> {
     Left(Ty1),
     Right(Ty2),
 }
+
+// #[macro_export]
+// macro_rules! print {
+//     ($($arg:tt)*) => ($crate::vga_buffer::_print(format_args!($($arg)*)));
+// }
+//
+// #[macro_export]
+// macro_rules! println {
+//     () => ($crate::print!("\n"));
+//     ($($arg:tt)*) => ($crate::print!("{}\n", format_args!($($arg)*)));
+// }

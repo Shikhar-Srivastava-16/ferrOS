@@ -19,3 +19,7 @@ bootloader = "0.9"
 spin = "0.10.0"
 volatile = "0.2.6"
 x86_64 = "0.15.4"
+
+[dependencies.lazy_static]
+version = "1.0"
+features = ["spin_no_std"]

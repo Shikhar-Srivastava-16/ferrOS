@@ -1,4 +1,4 @@
-use crate::dprintf;
+use crate::debug::dprintf;
 use crate::hw_ops::HWWrite;
 use volatile::Volatile;
 /// The height of the text buffer (normally 25 lines).
@@ -114,7 +114,7 @@ impl HWWrite for VGAScreen {
                 let row = BUFFER_HEIGHT - 1;
                 let col = self.column_position;
 
-                dprintf(&[byte]);
+                // dprintf(&[byte]);
                 let code = VGACode::default();
                 self.buffer.chars[usize::from(row)][usize::from(col)].write(VGACharacter {
                     ascii_character: byte,
