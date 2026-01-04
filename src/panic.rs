@@ -2,9 +2,9 @@ use crate::dprintln;
 use core::panic::PanicInfo;
 
 #[panic_handler]
-pub fn panic(info: &PanicInfo) -> ! {
+pub fn panic_handler(info: &PanicInfo) -> ! {
     // NOTE: temporary
-    dprintln!("PANIC: {}", info.message().as_str().unwrap_or_default());
+    dprintln!("PANIC: {:#?}", info.message());
     loop {}
 }
 
