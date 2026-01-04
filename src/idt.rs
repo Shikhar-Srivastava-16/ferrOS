@@ -3,21 +3,27 @@
 use crate::debug::dprintln;
 use crate::format;
 use lazy_static::lazy_static;
-use x86_64::structures::idt::InterruptDescriptorTable as IDT;
-use x86_64::structures::idt::InterruptStackFrame as IStFr;
+use x86_64::structures::idt::InterruptDescriptorTable;
+use x86_64::structures::idt::InterruptStackFrame;
 
-extern "x86-interrupt" fn breakpoint_handler(stack_frame: IStFr) {
+extern "x86-interrupt" fn breakpoint_handler(stack_frame: InterruptStackFrame) {
     dprintln("EXCEPTION: BREAKPOINT\n");
 }
 
+extern "x86-interrupt" fn dft_handler(stack_frame: InterruptStackFrame, _error_code: u64) -> ! {
+    dprintln("EXCEPTION: DOUBLE FAULT\n");
+    panic!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
+}
+
 lazy_static! {
-    static ref IDT_INST: IDT = {
-        let mut idt = IDT::new();
+    static ref IDT: InterruptDescriptorTable = {
+        let mut idt = InterruptDescriptorTable::new();
         idt.breakpoint.set_handler_fn(breakpoint_handler);
+        idt.double_fault.set_handler_fn(dft_handler);
         idt
     };
 }
 
 pub fn init_idt() {
-    IDT_INST.load();
+    IDT.load();
 }

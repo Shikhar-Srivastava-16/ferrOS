@@ -27,7 +27,10 @@ pub extern "C" fn _start() -> ! {
     dprintln("meow1!");
     x86_64::instructions::interrupts::int3();
     dprintln("meow2!");
-
+    unsafe {
+        // unsafe and should fault
+        *(0xdeadbeef as *mut u8) = 42;
+    }
     let mut scr = VGAScreen::default();
     scr.hw_write_string(b"foobar");
     // NOTE: Temp block end
