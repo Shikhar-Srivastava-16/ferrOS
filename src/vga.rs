@@ -1,4 +1,3 @@
-use crate::debug::dprintf;
 use crate::hw_ops::HWWrite;
 use volatile::Volatile;
 /// The height of the text buffer (normally 25 lines).

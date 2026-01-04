@@ -1,17 +1,12 @@
-// #![feature(abi_x86_interrupt)]
-
-use crate::debug::dprintln;
-use crate::format;
 use lazy_static::lazy_static;
 use x86_64::structures::idt::InterruptDescriptorTable;
 use x86_64::structures::idt::InterruptStackFrame;
 
 extern "x86-interrupt" fn breakpoint_handler(stack_frame: InterruptStackFrame) {
-    dprintln("EXCEPTION: BREAKPOINT\n");
+    crate::dprintln!("EXCEPTION: BREAKPOIN\n{:#?}", stack_frame);
 }
 
 extern "x86-interrupt" fn dft_handler(stack_frame: InterruptStackFrame, _error_code: u64) -> ! {
-    dprintln("EXCEPTION: DOUBLE FAULT\n");
     panic!("EXCEPTION: DOUBLE FAULT\n{:#?}", stack_frame);
 }
 

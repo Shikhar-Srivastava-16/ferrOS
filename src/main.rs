@@ -12,7 +12,7 @@ mod hw_ops;
 mod idt;
 
 // imports
-use crate::debug::dprintln;
+// use crate::debug;
 use crate::vga::VGAScreen;
 use crate::hw_ops::HWWrite;
 
@@ -24,9 +24,9 @@ pub extern "C" fn _start() -> ! {
     // NOTE: Temp block start
     // panic!("MEOW");
     idt::init_idt();
-    dprintln("meow1!");
+    dprintln!("meow1!");
     x86_64::instructions::interrupts::int3();
-    dprintln("meow2!");
+    dprintln!("meow2!");
     unsafe {
         // unsafe and should fault
         *(0xdeadbeef as *mut u8) = 42;

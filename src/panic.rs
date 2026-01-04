@@ -1,17 +1,15 @@
-use crate::debug::dprintf;
+use crate::dprintln;
 use core::panic::PanicInfo;
 
 #[panic_handler]
 pub fn panic(info: &PanicInfo) -> ! {
     // NOTE: temporary
-    dprintf("PANIC: ");
-    dprintf(info.message().as_str().unwrap_or_default());
-
-    // write!(DEBUG_OUTPUT, "panicked: {}", info.message());
+    dprintln!("PANIC: {}", info.message().as_str().unwrap_or_default());
     loop {}
 }
 
+#[allow(unused)]
 pub fn panic_no_impl(msg: &str) -> ! {
-    dprintf(msg);
+    dprintln!("{}", msg);
     panic!("Not yet implemented!");
 }
