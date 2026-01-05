@@ -4,7 +4,11 @@ use core::panic::PanicInfo;
 #[panic_handler]
 pub fn panic_handler(info: &PanicInfo) -> ! {
     // NOTE: temporary
-    dprintln!("PANIC: {:#?}", info.message());
+    dprintln!(
+        "PANIC at {:#?}:\n{:#?}",
+        info.location().unwrap(),
+        info.message()
+    );
     loop {}
 }
 
