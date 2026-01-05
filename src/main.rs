@@ -22,22 +22,32 @@ use crate::hw_ops::HWWrite;
 #[unsafe(no_mangle)]
 pub extern "C" fn _start() -> ! {
 
-    // NOTE: Temp block start
-    // panic!("MEOW");
-    idt::init_idt();
-    gdt::init();
+    init_tables();
+
+    let mut a = 0;
+    for _ in 1..10000{
+        a += 10;
+    }
+
     dprintln!("Breakpoint exception: ");
     x86_64::instructions::interrupts::int3();
-
-    //`fn so() {
-    //`    dprintln!("!!recursive call!!");
-    //`    so()
-    //`}
-
-    //`so();
-
+    
     let mut scr = VGAScreen::default();
+
+
+    // let scr = spin::Mutex::new(VGAScreen::default());
+    // scr.lock().hw_write_string(b"foobar");
+    
+
     scr.hw_write_string(b"foobar");
-    // NOTE: Temp block end
-    loop {}
+    loop {
+        x86_64::instructions::hlt();
+    }
+}
+
+fn init_tables() {
+    idt::init_idt();
+    gdt::init();
+    x86_64::instructions::interrupts::enable();
+    unsafe { idt::PICS.lock().initialize() };
 }
