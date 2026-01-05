@@ -10,6 +10,7 @@ mod panic;
 mod vga;
 mod hw_ops;
 mod idt;
+mod gdt;
 
 // imports
 // use crate::debug;
@@ -24,13 +25,17 @@ pub extern "C" fn _start() -> ! {
     // NOTE: Temp block start
     // panic!("MEOW");
     idt::init_idt();
-    dprintln!("meow1!");
+    gdt::init();
+    dprintln!("Breakpoint exception: ");
     x86_64::instructions::interrupts::int3();
-    dprintln!("meow2!");
-    unsafe {
-        // unsafe and should fault
-        *(0xdeadbeef as *mut u8) = 42;
-    }
+
+    //`fn so() {
+    //`    dprintln!("!!recursive call!!");
+    //`    so()
+    //`}
+
+    //`so();
+
     let mut scr = VGAScreen::default();
     scr.hw_write_string(b"foobar");
     // NOTE: Temp block end

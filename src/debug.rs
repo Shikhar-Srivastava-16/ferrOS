@@ -58,11 +58,3 @@ macro_rules! dprintln {
     () => ($crate::dprintf!("\n"));
     ($($arg:tt)*) => ($crate::dprintf!("{}\n", format_args!($($arg)*)));
 }
-
-// #[macro_export]
-// macro_rules! format {
-//     () => {};
-//     ($($arg:tt)*) => {
-//         (format_args!($($arg)*)).as_str()
-//     };
-// }
