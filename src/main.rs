@@ -13,7 +13,6 @@ mod idt;
 mod gdt;
 
 // imports
-// use crate::debug;
 use crate::vga::VGAScreen;
 use crate::hw_ops::HWWrite;
 
@@ -24,11 +23,8 @@ pub extern "C" fn _start() -> ! {
 
     init_tables();
 
-    let mut scr = VGAScreen::default();
-    scr.hw_write_string(b"Hello World!");
-
-    // let scr = spin::Mutex::new(VGAScreen::default());
-    // scr.lock().hw_write_string(b"Hello World!");
+    let scr = spin::Mutex::new(VGAScreen::default());
+    scr.lock().hw_write_string(b"Hello World!");
 
     loop {
         x86_64::instructions::hlt();
