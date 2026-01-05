@@ -24,22 +24,12 @@ pub extern "C" fn _start() -> ! {
 
     init_tables();
 
-    let mut a = 0;
-    for _ in 1..10000{
-        a += 10;
-    }
-
-    dprintln!("Breakpoint exception: ");
-    x86_64::instructions::interrupts::int3();
-    
     let mut scr = VGAScreen::default();
-
+    scr.hw_write_string(b"Hello World!");
 
     // let scr = spin::Mutex::new(VGAScreen::default());
-    // scr.lock().hw_write_string(b"foobar");
-    
+    // scr.lock().hw_write_string(b"Hello World!");
 
-    scr.hw_write_string(b"foobar");
     loop {
         x86_64::instructions::hlt();
     }
