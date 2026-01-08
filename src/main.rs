@@ -5,22 +5,25 @@
 
 // modules
 mod debug;
-mod std;
-mod panic;
-mod vga;
+mod gdt;
 mod hw_ops;
 mod idt;
-mod gdt;
+mod panic;
+mod std;
+mod vga;
 
 // imports
-use crate::vga::VGAScreen;
 use crate::hw_ops::HWWrite;
+use crate::vga::VGAScreen;
 
 // no_mangle: do not change the name of this function during compilation; extern "C" to allow use
-// of the underlying C-based ABI 
-#[unsafe(no_mangle)]
-pub extern "C" fn _start() -> ! {
+// of the underlying C-based ABI
+// #[unsafe(no_mangle)]
+// pub extern "C" fn _start() -> ! {
 
+bootloader::entry_point!(kernel_main);
+
+fn kernel_main(_info: &'static bootloader::BootInfo) -> ! {
     init_tables();
 
     let scr = spin::Mutex::new(VGAScreen::default());
