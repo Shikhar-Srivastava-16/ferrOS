@@ -3,4 +3,5 @@ pub trait HWWrite {
     fn hw_write_string(&mut self, msg: &[u8]) -> u8;
 }
 
+#[allow(unused)]
 pub trait HWRead {}
