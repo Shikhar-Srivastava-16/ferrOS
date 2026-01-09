@@ -32,8 +32,12 @@ pub extern "C" fn _start() -> ! {
 }
 
 fn init_tables() {
+    dprintln!("..initialising IDT..");
     idt::init_idt();
+    dprintln!("..initialising GDT..");
     gdt::init();
+    dprintln!("..enabling generic interrupts..");
     x86_64::instructions::interrupts::enable();
+    dprintln!("!!UNSAFE ACTION!!..initializing PIC..");
     unsafe { idt::PICS.lock().initialize() };
 }
