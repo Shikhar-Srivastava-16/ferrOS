@@ -1,9 +1,15 @@
 use crate::hw_ops::HWWrite;
+use lazy_static::lazy_static;
+use spin::Mutex;
 use volatile::Volatile;
 /// The height of the text buffer (normally 25 lines).
 const BUFFER_HEIGHT: usize = 25;
 /// The width of the text buffer (normally 80 columns).
 const BUFFER_WIDTH: usize = 80;
+
+lazy_static! {
+    static ref SCREEN: Mutex<VGAScreen> = spin::Mutex::new(VGAScreen::default());
+}
 
 // unused enum variants should not throw warnings
 #[allow(dead_code)]
@@ -11,7 +17,7 @@ const BUFFER_WIDTH: usize = 80;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 // each variant is a u8
 #[repr(u8)]
-pub enum VGAColour {
+enum VGAColour {
     Black = 0,
     Blue = 1,
     Green = 2,
@@ -58,7 +64,7 @@ struct VGACharacter {
     code: VGACode,
 }
 
-pub struct VGAScreen {
+struct VGAScreen {
     column_position: u8,
     buffer: &'static mut VGABuffer,
 }
@@ -142,4 +148,36 @@ impl HWWrite for VGAScreen {
         }
         0
     }
+}
+
+use core::fmt::Error as fmtErr;
+use x86_64::instructions::interrupts;
+
+impl core::fmt::Write for VGAScreen {
+    fn write_str(&mut self, s: &str) -> Result<(), fmtErr> {
+        // TODO: fix this crit sec
+        interrupts::without_interrupts(|| {
+            self.hw_write_string(s.as_bytes());
+        });
+        Ok(()) // figure out return types
+    }
+}
+
+pub fn _vga_printf(args: core::fmt::Arguments) {
+    use core::fmt::Write;
+    SCREEN
+        .lock()
+        .write_fmt(args)
+        .unwrap_or_else(|e| panic!("`_vga_printf` action failed: {:?}", e));
+}
+
+#[macro_export]
+macro_rules! vga_printf {
+    ($($arg:tt)*) => ($crate::vga::_vga_printf(format_args!($($arg)*)));
+}
+
+#[macro_export]
+macro_rules! vga_println {
+    () => ($crate::vga_printf!("\n"));
+    ($($arg:tt)*) => ($crate::vga_printf!("{}\n", format_args!($($arg)*)));
 }
