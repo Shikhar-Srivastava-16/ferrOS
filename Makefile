@@ -6,8 +6,8 @@ clean:
 	cargo clean
 
 build:
-	cargo build -Zjson-target-spec
-	cargo bootimage -Zjson-target-spec
+	cargo build
+	cargo bootimage 
 
 cleanbuild: clean build
 

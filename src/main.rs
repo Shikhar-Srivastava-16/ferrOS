@@ -41,6 +41,4 @@ fn init_tables() {
     unsafe { idt::PICS.lock().initialize() };
     dprintln!("..enabling generic interrupts..");
     x86_64::instructions::interrupts::enable();
-    // dprintln!("!!UNSAFE ACTION!!..initializing PIC..");
-    // unsafe { idt::PICS.lock().initialize() };
 }
