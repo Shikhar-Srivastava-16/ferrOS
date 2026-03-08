@@ -13,20 +13,15 @@ mod std;
 mod vga;
 
 // imports
-// use crate::vga::SCREEN as scr;
-use x86_64::instructions::interrupts;
-
+use crate::hw_ops::HWWrite;
+use crate::vga::VGAScreen;
+use bootloader::{entry_point, BootInfo};
 // no_mangle: do not change the name of this function during compilation; extern "C" to allow use
 // of the underlying C-based ABI
-
-bootloader::entry_point!(kernel_main);
-
-fn kernel_main(boot_info: &'static bootloader::BootInfo) -> ! {
-    use memory::active_level_4_table;
-    use x86_64::VirtAddr;
-
-    dprintln!("Boot Information: {:#?}", boot_info);
-
+// #[unsafe(no_mangle)]
+// pub extern "C" fn _start() -> ! {
+entry_point!(main);
+fn main(info: &'static BootInfo) -> ! {
     init_tables();
 
     crate::vga_printf!("HELLO WORLD!");

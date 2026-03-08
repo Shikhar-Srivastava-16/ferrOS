@@ -7,7 +7,7 @@ clean:
 
 build:
 	cargo build
-	cargo bootimage
+	cargo bootimage 
 
 cleanbuild: clean build
 
