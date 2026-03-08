@@ -13,15 +13,18 @@ mod std;
 mod vga;
 
 // imports
-use crate::hw_ops::HWWrite;
-use crate::vga::VGAScreen;
 use bootloader::{entry_point, BootInfo};
+use memory::active_level_4_table;
+use x86_64::{
+    structures::paging::{Page, Size4KiB},
+    VirtAddr,
+};
 // no_mangle: do not change the name of this function during compilation; extern "C" to allow use
 // of the underlying C-based ABI
 // #[unsafe(no_mangle)]
 // pub extern "C" fn _start() -> ! {
 entry_point!(main);
-fn main(info: &'static BootInfo) -> ! {
+fn main(boot_info: &'static BootInfo) -> ! {
     init_tables();
 
     crate::vga_printf!("HELLO WORLD!");
@@ -29,8 +32,8 @@ fn main(info: &'static BootInfo) -> ! {
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
     let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
 
-    let mut mapper = unsafe { memory::init(phys_mem_offset) };
-    let mut frame_allocator = memory::EmptyFrameAllocator;
+    // let mapper = unsafe { memory::init(phys_mem_offset) };
+    // let mut frame_allocator = memory::EmptyFrameAllocator;
 
     for (i, entry) in l4_table.iter().enumerate() {
         if !entry.is_unused() {
@@ -42,8 +45,8 @@ fn main(info: &'static BootInfo) -> ! {
 
     // map an unused page
     // max 4096
-    let page = x86_64::structures::paging::Page::containing_address(VirtAddr::new(4095));
-    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+    let page: Page<Size4KiB> = Page::containing_address(VirtAddr::new(4095));
+    // memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
 
     // write the string `New!` to the screen through the new mapping
     let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
