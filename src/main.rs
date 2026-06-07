@@ -4,20 +4,24 @@
 #![feature(abi_x86_interrupt)]
 
 // modules
-mod debug;
 mod gdt;
 mod hw_ops;
 mod idt;
-mod panic;
 mod std;
 mod vga;
 
 // imports
-use bootloader::{entry_point, BootInfo};
-use memory::active_level_4_table;
+use bootloader::{BootInfo, entry_point};
+// use memory::translate_addr;
+// use memory::translate_addr_inner;
+use macros::dprintf;
+use macros::dprintln;
+use macros::panic;
+use memory::BootInfoFrameAllocator;
+use memory::translate_addr;
 use x86_64::{
-    structures::paging::{Page, Size4KiB},
     VirtAddr,
+    structures::paging::{Page, Size4KiB, Translate},
 };
 // no_mangle: do not change the name of this function during compilation; extern "C" to allow use
 // of the underlying C-based ABI
@@ -30,27 +34,39 @@ fn main(boot_info: &'static BootInfo) -> ! {
     crate::vga_printf!("HELLO WORLD!");
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);
-    let l4_table = unsafe { active_level_4_table(phys_mem_offset) };
-
-    // let mapper = unsafe { memory::init(phys_mem_offset) };
-    // let mut frame_allocator = memory::EmptyFrameAllocator;
-
-    for (i, entry) in l4_table.iter().enumerate() {
-        if !entry.is_unused() {
-            dprintln!("L4 Entry {}: {:?}", i, entry);
-        }
-    }
 
     dprintln!("MEOW");
+    dprintln!("memory map: {:#?}", &boot_info.memory_map);
 
-    // map an unused page
-    // max 4096
-    let page: Page<Size4KiB> = Page::containing_address(VirtAddr::new(4095));
-    // memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
+    let mut mapper = unsafe { memory::init(phys_mem_offset) };
+    let mut frame_allocator = unsafe { BootInfoFrameAllocator::init(&boot_info.memory_map) };
+
+    let page = Page::containing_address(VirtAddr::new(0xdeadbeaf000));
+    memory::create_example_mapping(page, &mut mapper, &mut frame_allocator);
 
     // write the string `New!` to the screen through the new mapping
     let page_ptr: *mut u64 = page.start_address().as_mut_ptr();
-    // unsafe { page_ptr.offset(0).write_volatile(0x_f021_f077_f065_f04e) };
+    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
+    unsafe { page_ptr.offset(450).write_volatile(0x_f021_f077_f065_f04e) };
+
+    let addresses = [
+        // the identity-mapped vga buffer page
+        0xb8000,
+        // some code page
+        0x201008,
+        // some stack page
+        0x0100_0020_1a10,
+        // virtual address mapped to physical address 0
+        boot_info.physical_memory_offset,
+    ];
+
+    for &address in &addresses {
+        let virt = VirtAddr::new(address);
+        let phys = unsafe { translate_addr(virt, phys_mem_offset) };
+        dprintln!("{:?} -> {:?}", virt, phys);
+    }
+
+    unsafe { page_ptr.offset(400).write_volatile(0x_f021_f077_f065_f04e) };
 
     /* Potential Book Entry:
     *

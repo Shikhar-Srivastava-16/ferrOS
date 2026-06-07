@@ -17,6 +17,7 @@ edition = "2024"
 [dependencies]
 bootloader = {version = "0.9", features = ["map_physical_memory"]}
 memory = { version = "0.1.0", path = "src/memory" }
+macros = { version = "0.1.0", path = "src/macros" }
 pc-keyboard = "0.8.0"
 pic8259 = "0.10.1"
 spin = "0.10.0"

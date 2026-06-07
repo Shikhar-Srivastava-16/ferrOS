@@ -1,4 +1,11 @@
+use core::clone::Clone;
+use core::default::Default;
 use core::fmt::Error as fmtErr;
+use core::marker::Copy;
+use core::panic;
+use core::prelude::rust_2024::derive;
+use core::result::Result;
+use core::result::Result::Ok;
 
 #[allow(dead_code)]
 // write a message to the debug port, only for qemu

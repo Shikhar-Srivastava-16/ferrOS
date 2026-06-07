@@ -9,6 +9,7 @@ bench = false
 
 [dependencies]
 bootloader = { version = "0.9", features = ["map_physical_memory"] }
+macros = { version = "0.1.0", path = "../macros" }
 pic8259 = "0.11.0"
 spin = "0.10.0"
 volatile = "0.2.6"

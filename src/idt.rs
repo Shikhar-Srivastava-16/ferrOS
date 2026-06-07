@@ -189,7 +189,7 @@ extern "x86-interrupt" fn keyboard_int_handler(_stack_frame: InterruptStackFrame
     //         .notify_end_of_interrupt(Interrupts::Keyboard as u8);
     // }
 
-    use pc_keyboard::{layouts, DecodedKey, HandleControl, Keyboard, ScancodeSet1};
+    use pc_keyboard::{DecodedKey, HandleControl, Keyboard, ScancodeSet1, layouts};
     use spin::Mutex;
     use x86_64::instructions::port::Port;
 
@@ -222,8 +222,6 @@ extern "x86-interrupt" fn keyboard_int_handler(_stack_frame: InterruptStackFrame
 }
 
 extern "x86-interrupt" fn timer_interrupt_handler(_stack_frame: InterruptStackFrame) {
-    crate::dprintf!(".");
-
     unsafe {
         PICS.lock().notify_end_of_interrupt(Interrupts::Timer as u8);
     }
