@@ -1,11 +1,14 @@
-pub struct ListNode {
+// There's nothing to store values here you dolt
+
+pub struct ListNode<T: Default> {
+    pub val: T,
     pub size: usize,
-    pub next: Option<&'static mut ListNode>,
+    pub next: Option<&'static mut ListNode<T>>,
 }
 
-impl ListNode {
+impl ListNode<T> {
     pub const fn new(size: usize) -> Self {
-        ListNode { size, next: None }
+        ListNode { val: T::, size, next: None }
     }
 
     pub fn start_addr(&self) -> usize {
