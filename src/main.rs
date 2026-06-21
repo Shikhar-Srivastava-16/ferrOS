@@ -25,7 +25,6 @@ use x86_64::{
     structures::paging::{Page, Size4KiB, Translate},
 };
 
-use core::Vec;
 // no_mangle: do not change the name of this function during compilation; extern "C" to allow use
 // of the underlying C-based ABI
 // #[unsafe(no_mangle)]
@@ -231,9 +230,4 @@ pub fn div(op1: k_float, op2: k_float) -> k_float {
 // helpers, also stubs
 pub fn sq(op: k_float) -> k_float {
     op * op
-}
-
-// non-stubs, but use the stubs
-pub fn summation(list: [k_float, 64]) -> k_float {
-    panic!("todo: not implemented yet");
 }
